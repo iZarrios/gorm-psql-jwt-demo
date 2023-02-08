@@ -41,4 +41,5 @@ func main() {
 	routes.SetupRouter(v1)
 	r.Run("localhost:8000")
 
+
 }

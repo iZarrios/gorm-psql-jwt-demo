@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/iZarrios/gorm-psql-jwt-demo/storage"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func GetUsers(c *gin.Context) {
@@ -29,7 +30,20 @@ func CreateUser(c *gin.Context) {
 
 	c.BindJSON(&user)
 
-	err := storage.GlobalStore.CreateUser(user)
+	password := []byte(user.Password)
+	hashedPw, err := bcrypt.GenerateFromPassword(password, 10)
+	if err != nil {
+
+		c.JSON(http.StatusInternalServerError,
+			gin.H{
+				"status":  "failed",
+				"message": err,
+			})
+		return
+	}
+	user.Password = string(hashedPw)
+
+	err = storage.GlobalStore.CreateUser(user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError,
 			gin.H{
@@ -58,6 +72,7 @@ func DeleteUser(c *gin.Context) {
 				"message": "error with input",
 				"data":    nil,
 			})
+		return
 	}
 	err = storage.GlobalStore.DeleteUser(idInt)
 	if err != nil {
@@ -67,6 +82,7 @@ func DeleteUser(c *gin.Context) {
 				"message": "ID not found",
 				"data":    nil,
 			})
+		return
 	}
 	c.JSON(http.StatusOK,
 		gin.H{

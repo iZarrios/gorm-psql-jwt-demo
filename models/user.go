@@ -1,15 +1,21 @@
 package models
 
 import (
+	"time"
+
 	"gorm.io/gorm"
 )
 
 // UserDB
 type User struct {
-	Id       uint    `gorm:"primary key;autoIncrement" json:"_id"`
-	UserName *string `gorm:"not null" json:"user_name"`
-	Password *string `gorm:"not null" json:"password"`
-	Email    *string `gorm:"not null;unique" json:"email"`
+	// gorm.Model
+	Id        uint   `gorm:"primary key;autoIncrement" json:"_id"`
+	UserName  string `gorm:"not null" json:"user_name"`
+	Password  string `gorm:"not null" json:"password"`
+	Email     string `gorm:"not null;unique" json:"email"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
 func MigrateUser(db *gorm.DB) error {

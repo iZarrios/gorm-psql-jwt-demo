@@ -15,9 +15,9 @@ var GlobalStore *PostgresStore
 
 type User struct {
 	Id       uint    `json:"-"`
-	UserName *string `json:"username"`
-	Password *string `json:"password"`
-	Email    *string `json:"email"`
+	UserName string `json:"username"`
+	Password string `json:"password"`
+	Email    string `json:"email"`
 }
 
 func (s *PostgresStore) CreateUser(user *User) error {
