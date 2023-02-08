@@ -10,11 +10,14 @@ func SetupRouter(rg *gin.RouterGroup) {
 	auth := rg.Group("/auth")
 	admin := rg.Group("/admin")
 
-	r.GET("/ping", controllers.Ping)
+	r.GET("/ping", controllers.CookieAuth(), controllers.Ping)
 
 	admin.GET("/users", controllers.GetUsers)
-    admin.DELETE("/users/:id", controllers.DeleteUser)
+	admin.DELETE("/users/:id", controllers.DeleteUser)
 
+	// admin.Use(controllers.CookieAuth())
 
-    auth.POST("/register", controllers.CreateUser)
+	auth.POST("/register", controllers.CreateUser)
+	auth.POST("/login", controllers.LoginUser)
+	auth.GET("/logout", controllers.LogoutUser)
 }

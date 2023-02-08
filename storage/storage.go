@@ -13,21 +13,21 @@ type PostgresStore struct {
 
 var GlobalStore *PostgresStore
 
-type User struct {
-	Id       uint    `json:"-"`
-	UserName string `json:"username"`
-	Password string `json:"password"`
-	Email    string `json:"email"`
-}
 
-func (s *PostgresStore) CreateUser(user *User) error {
+// func (s *PostgresStore) CreateUser(user *User) error {
+func (s *PostgresStore) CreateUser(user *models.User) error {
 	err := s.DB.Create(&user).Error
 	return err
 }
 
-func (s *PostgresStore) DeleteUser(id int) error {
-	// use userDB
-	err := s.DB.Delete(models.User{}, id).Error
+func (s *PostgresStore) DeleteUser(id uint) error {
+
+	user := &models.User{Id: id}
+	err := s.DB.First(&user).Error
+
+	// Delete results in a sucess anyways?
+	// err := s.DB.Delete(&user).Error
+
 	return err
 
 }
