@@ -8,7 +8,7 @@ import (
 
 func Ping(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
-		"code":    http.StatusOK,
+		"code":    "success",
 		"message": "pong",
 	})
 
