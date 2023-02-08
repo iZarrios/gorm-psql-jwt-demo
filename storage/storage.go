@@ -1,17 +1,58 @@
 package storage
 
-import "github.com/iZarrios/gorm-psql-jwt-demo/models"
+import (
+	"github.com/iZarrios/gorm-psql-jwt-demo/models"
+	"gorm.io/gorm"
+)
 
-type User = models.User
+// type UserDB = models.UserDB
 
-
-type Storage interface {
-
-    CreateUser(*User) error
-	DeleteUser(int) (int, error)
-	UpdateUser(*User) error
-	GetUsers() ([]*User, error)
-	GetUserByID(int) (*User, error)
-	GetUserByNumber(int) (*User, error)
+type PostgresStore struct {
+	DB *gorm.DB
 }
 
+var GlobalStore *PostgresStore
+
+type User struct {
+	Id       uint    `json:"-"`
+	UserName *string `json:"username"`
+	Password *string `json:"password"`
+	Email    *string `json:"email"`
+}
+
+func (s *PostgresStore) CreateUser(user *User) error {
+	err := s.DB.Create(&user).Error
+	return err
+}
+
+func (s *PostgresStore) DeleteUser(id int) error {
+	// use userDB
+	err := s.DB.Delete(models.User{}, id).Error
+	return err
+
+}
+func (s *PostgresStore) UpdateUser(user *models.User) error {
+	//TODO
+	// https://gorm.io/docs/update.html#Update-Changed-Fields
+	return nil
+
+}
+
+func (s *PostgresStore) GetUsers() ([]models.User, error) {
+	users := &[]models.User{}
+
+	err := s.DB.Find(users).Error
+
+	return *users, err
+}
+
+func (s *PostgresStore) GetUserByID(user *models.User) error {
+	//TODO
+	return nil
+
+}
+
+func (s *PostgresStore) GetUserByNumber(user *models.User) error {
+	//TODO
+	return nil
+}
