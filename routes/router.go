@@ -6,7 +6,15 @@ import (
 )
 
 func SetupRouter(rg *gin.RouterGroup) {
-    r := rg.Group("/")
+	r := rg.Group("/")
+	auth := rg.Group("/auth")
+	admin := rg.Group("/admin")
 
 	r.GET("/ping", controllers.Ping)
+
+	admin.GET("/users", controllers.GetUsers)
+    admin.DELETE("/users/:id", controllers.DeleteUser)
+
+
+    auth.POST("/register", controllers.CreateUser)
 }
