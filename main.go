@@ -24,11 +24,11 @@ func main() {
 	// singal instance that we are connected to all the time
 	store := &storage.PostgresStore{}
 	storage.ConnectDB(&myDbConfig, store)
-    storage.GlobalStore = store
+	storage.GlobalStore = store
 
 	fmt.Println("Connected to db...")
-    models.MigrateUser(storage.GlobalStore.DB)
-    fmt.Println("Successfully migrated the user table to the db...")
+	models.MigrateUser(storage.GlobalStore.DB)
+	fmt.Println("Successfully migrated the user table to the db...")
 
 	r := gin.Default()
 
@@ -40,6 +40,5 @@ func main() {
 
 	routes.SetupRouter(v1)
 	r.Run("localhost:8000")
-
 
 }
