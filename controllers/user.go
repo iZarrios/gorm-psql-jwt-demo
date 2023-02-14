@@ -13,7 +13,8 @@ import (
 )
 
 const (
-	SECRET_JWT_KEY = "this-is-not-a-secret"
+	SECRET_JWT_KEY      = "this-is-not-a-secret"
+	TOKEN_DURATION_SECS = 600
 )
 
 func GetUsers(c *gin.Context) {
@@ -96,10 +97,12 @@ func DeleteUser(c *gin.Context) {
 	c.JSON(http.StatusOK,
 		gin.H{
 			"status":  "success",
-			"message": "Successfuly deleted user",
+			"message": "Successfully deleted user",
 			"data":    idInt,
 		})
 }
+
+// src: https://gin-gonic.com/docs/examples/custom-middleware/
 func CookieAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Get cookie
@@ -152,22 +155,23 @@ func LoginUser(c *gin.Context) {
 
 		claims := &jwt.RegisteredClaims{
 			// ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24)),
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Second * 600)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Second * TOKEN_DURATION_SECS)),
 			Issuer:    strconv.Itoa(int(userFromDB.Id)),
 		}
 		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 		ss, err := token.SignedString([]byte(SECRET_JWT_KEY))
-        _ = ss
+		_ = ss
 
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
+				"status":  "failed",
 				"data":    gin.H{"user": userFromDB.UserName},
 				"message": "could not login try again",
 			})
 		}
-		//https://github.com/gin-gonic/examples/blob/001f7ac527ee46d6404db92955c69b60311086d8/cookie/main.go
-		c.SetCookie("jwt", "ok", 600, "/", "localhost", false, true)
+		//http://github.com/gin-gonic/examples/blob/001f7ac527ee46d6404db92955c69b60311086d8/cookie/main.go
+		c.SetCookie("jwt", "ok", TOKEN_DURATION_SECS, "/", "localhost", false, true)
 
 		c.JSON(http.StatusOK,
 			gin.H{
@@ -178,8 +182,23 @@ func LoginUser(c *gin.Context) {
 	}
 }
 
+
 func LogoutUser(c *gin.Context) {
+
+	// // Get cookie
+	// cookie, err := c.Cookie("jwt")
+	// if err == nil {
+	// 	if cookie != "ok" {
+	// 		c.Next()
+	// 		return
+	// 	}
+	// }
+
 	c.SetCookie("jwt", "ok", -1, "/", "localhost", false, true)
-    c.JSON(200,"hi")
+	c.JSON(http.StatusOK,
+		gin.H{
+			"status":  "success",
+			"message": "Logged out successfully!",
+		})
 
 }
