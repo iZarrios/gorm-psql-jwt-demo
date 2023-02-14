@@ -11,6 +11,7 @@ import (
 )
 
 func main() {
+    // gin.SetMode(gin.ReleaseMode)
 
 	myDbConfig := storage.DBConfig{
 		Host:     "localhost",
@@ -27,7 +28,9 @@ func main() {
 	storage.GlobalStore = store
 
 	fmt.Println("Connected to db...")
+
 	models.MigrateUser(storage.GlobalStore.DB)
+
 	fmt.Println("Successfully migrated the user table to the db...")
 
 	r := gin.Default()
