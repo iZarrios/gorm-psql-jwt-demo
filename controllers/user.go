@@ -103,6 +103,7 @@ func DeleteUser(c *gin.Context) {
 }
 
 // src: https://gin-gonic.com/docs/examples/custom-middleware/
+// https://www.golinuxcloud.com/golang-jwt/#Verifying_JWT_tokens
 func CookieAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Get cookie
@@ -181,7 +182,6 @@ func LoginUser(c *gin.Context) {
 
 	}
 }
-
 
 func LogoutUser(c *gin.Context) {
 
