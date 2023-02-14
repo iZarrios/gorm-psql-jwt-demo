@@ -16,7 +16,7 @@ func SetupRouter(rg *gin.RouterGroup) {
 	admin.GET("/users", controllers.GetUsers)
 	admin.DELETE("/users/:id", controllers.DeleteUser)
 
-	auth.POST("/register", controllers.CreateUser)
+	auth.POST("/register", controllers.RegisterUser)
 	auth.POST("/login", controllers.LoginUser)
 	auth.GET("/logout", controllers.LogoutUser)
 }

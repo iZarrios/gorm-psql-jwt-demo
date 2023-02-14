@@ -3,6 +3,7 @@ package controllers
 import (
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -33,13 +34,13 @@ func GetUsers(c *gin.Context) {
 	})
 
 }
-func CreateUser(c *gin.Context) {
+func RegisterUser(c *gin.Context) {
 	// var user *storage.User
 	var user *models.User
 
 	c.BindJSON(&user)
 
-	passwordByte := []byte(user.Password)
+	passwordByte := []byte(strings.TrimSpace(user.Password))
 	hashedPw, err := bcrypt.GenerateFromPassword(passwordByte, 10)
 	if err != nil {
 
@@ -51,6 +52,8 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 	user.Password = string(hashedPw)
+	user.UserName = strings.TrimSpace(user.UserName)
+	user.Email = strings.TrimSpace(user.Email)
 
 	err = storage.GlobalStore.CreateUser(user)
 	if err != nil {
