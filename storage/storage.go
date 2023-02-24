@@ -5,14 +5,11 @@ import (
 	"gorm.io/gorm"
 )
 
-// type UserDB = models.UserDB
-
 type PostgresStore struct {
 	DB *gorm.DB
 }
 
 var GlobalStore *PostgresStore
-
 
 // func (s *PostgresStore) CreateUser(user *User) error {
 func (s *PostgresStore) CreateUser(user *models.User) error {
@@ -32,10 +29,8 @@ func (s *PostgresStore) DeleteUser(id uint) error {
 
 }
 func (s *PostgresStore) UpdateUser(user *models.User) error {
-	//TODO
-	// https://gorm.io/docs/update.html#Update-Changed-Fields
-	return nil
-
+	err := s.DB.Save(&user).Error
+	return err
 }
 
 func (s *PostgresStore) GetUsers() ([]models.User, error) {
@@ -46,13 +41,16 @@ func (s *PostgresStore) GetUsers() ([]models.User, error) {
 	return *users, err
 }
 
-func (s *PostgresStore) GetUserByID(user *models.User) error {
-	//TODO
-	return nil
-
+// get user by id
+func (s *PostgresStore) GetUserByID(id uint) (*models.User, error) {
+	user := &models.User{Id: id}
+	err := s.DB.First(&user).Error
+	return user, err
 }
 
-func (s *PostgresStore) GetUserByNumber(user *models.User) error {
-	//TODO
-	return nil
+// get user by username
+func (s *PostgresStore) GetUserByUsername(username string) (*models.User, error) {
+	user := &models.User{UserName: username}
+	err := s.DB.First(&user).Error
+	return user, err
 }
